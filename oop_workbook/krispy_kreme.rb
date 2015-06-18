@@ -1,8 +1,15 @@
 class KrispyKreme
+  @@donut_count = 0
+  def self.all_donuts 
+    @@donut_count
+  end
+
   attr_accessor :filling_type, :glazing
   def initialize(filling_type, glazing)
     @filling_type = filling_type
     @glazing = glazing
+    @@donut_count += 1
+
   end
 
   def to_s
@@ -25,3 +32,5 @@ puts donut2
 puts donut3
 puts donut4
 puts donut5
+
+puts KrispyKreme.all_donuts
