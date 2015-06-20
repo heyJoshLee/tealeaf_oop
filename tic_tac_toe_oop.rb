@@ -83,7 +83,6 @@ class Player
 
 end
 
-
 class Computer
 
   def pick_square(board)
@@ -93,15 +92,15 @@ class Computer
 
 end
 
-
 class Game
   attr_accessor :name, :current_player
   
-  def new_game 
+  def new_game(game)
     board = Board.new
     player = Player.new
     computer = Computer.new
     winner = ""
+    keep_playing = ""
       loop do
         player.pick_square(board)
         computer.pick_square(board)
@@ -112,11 +111,31 @@ class Game
           break
         end
       end
-      puts "#{winner} is the winner!"  
+
+      if winner
+        puts "#{winner} is the winner!" 
+      else 
+        puts "It's a tie"
+      end
+
+      loop do
+        puts "Do you want to play again? (Y/N)"
+        input = gets.chomp.downcase
+        if input == "y" || input == "n"
+          keep_playing = input
+          break
+        end
+      end
+
+      if keep_playing == "y"
+        game.new_game(game)
+      else
+        puts "Thanks for playing!"
+        exit
+      end
+
   end
 end
 
-
-
 game = Game.new
-game.new_game
+game.new_game(game)
