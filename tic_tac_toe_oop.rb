@@ -36,10 +36,11 @@ def draw_board()
     @b = {}
     (1..9).each{ |position| @b[position] = " "}
     @b
+    draw_board
   end
 
-  def empty_positions(b)
-    b.select {|k, v| v == " "}.keys
+  def empty_positions
+    @b.select {|k, v| v == " "}.keys
   end 
 
   def check_winner(b)
@@ -65,7 +66,17 @@ end
 
 class Player
 
-# pick_square
+  def initialize(name)
+    @name = name 
+  end
+
+  def pick_square()
+    begin
+      puts "Pick a square (1-9)"
+      position = gets.chomp.to_i
+    end until board.empty_positions.include?(position)
+    b[position] = "X"
+  end
 
 end
 
@@ -76,7 +87,22 @@ class Computer
 end
 
 
+class Game
+  attr_accessor :name, :current_player
+  
+  def new_game 
+    if @name == nil
+      puts "What is your name"
+      current_player = gets.chomp
+      puts "Hi, #{current_player} welcome to Tic-Tac-Toe!"
+   end
+  end
+
+
+end
+
 
 
 board = Board.new
-board.draw_board
+game = Game.new
+game.new_game
