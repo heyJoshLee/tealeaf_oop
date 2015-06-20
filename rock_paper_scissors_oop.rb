@@ -1,26 +1,32 @@
+require "Pry"
+
 class Game
-  def self.choices
-     choices = ['r', 'p', 's']
+  attr_accessor :person, :computer, :choices
+  
+  def choices
+     @@choices = ['r', 'p', 's']
   end
  
 
   def start_game
-    player = Person.new
-    computer = Computer.new
-    player.choice = " "
-    until Game.choices.include?(player.choice)
+    @person = Person.new
+    @computer = Computer.new
+    @person.choice = " "
+    until self.choices.include?(person.choice)
       puts "Rock (r), Paper (p) or scissors (s) ?"
-      player.choice = gets.chomp[0].downcase
+      @person.choice = gets.chomp[0].downcase
     end
+    @computer.choice = choices.sample
+
   end 
     
 
-  def puts_check_winner(person, computer)
-    puts "Player chose: #{person.choice}"
-    puts "Computer chose: #{computer.choice}"
-    if person.choice == computer.choice
+  def puts_check_winner(game)
+    puts "Player chose: #{game.person.choice}"
+    puts "Computer chose: #{game.computer.choice}"
+    if game.person.choice == game.computer.choice
       puts "It's a tie."
-    elsif person.choice == "r" && computer.choice == "s" || person.choice == "s" && computer.choice == "p"
+    elsif game.person.choice == "r" && game.computer.choice == "s" || game.person.choice == "s" && game.computer.choice == "p" || game.person.choice == "p" && game.computer.choice == "r"   
       puts "You win!"
     elsif 
       puts "Computer wins :("
@@ -45,5 +51,5 @@ end
 
 game = Game.new
 game.start_game
-game.puts_check_winner(player, computer)
+game.puts_check_winner(game)
 
