@@ -23,15 +23,16 @@ require"pry"
 class Board
   attr_accessor :b
 
-def draw_board()
-    system "clear"
-    puts "#{b[1]}  |  #{b[2]}  |  #{b[3]} "
-    puts " -------------- "
-    puts "#{b[4]}  |  #{b[5]}  |  #{b[6]} "
-    puts " -------------- "
-    puts "#{b[7]}  |  #{b[8]}  |  #{b[9]} "
+  def draw_board
+      system "clear"
+      puts "#{b[1]}  |  #{b[2]}  |  #{b[3]} "
+      puts " -------------- "
+      puts "#{b[4]}  |  #{b[5]}  |  #{b[6]} "
+      puts " -------------- "
+      puts "#{b[7]}  |  #{b[8]}  |  #{b[9]} "
   end
 
+  # Creates board has called from object.b
   def initialize
     @b = {}
     (1..9).each{ |position| @b[position] = " "}
@@ -43,7 +44,7 @@ def draw_board()
     @b.select {|k, v| v == " "}.keys
   end 
 
-  def check_winner(b)
+  def check_winner(board)
     winning_lines = [[1,2,3], [4,5,6], [7,8,9], [1,4,7], [2,5,8], [3,6,9], [1,5,9], [3,5,7]]
     winning_lines.each do |line|
       return "Player" if b.values_at(*line).count('X') == 3
@@ -52,37 +53,43 @@ def draw_board()
     nil
   end
 
-  def nine_positions_are_filled?(board)
-    empty_positions(board) == []
+  def nine_positions_are_filled?
+    !@b.has_value?(" ")
   end
 
-  def announce_winner(winner)
-    puts "#{winner} wins!"
+  def announce_winner()
+    puts "#{check_winner} wins!"
   end 
-
 
 end
 
 
 class Player
-
-  def initialize(name)
-    @name = name 
-  end
-
-  def pick_square()
-    begin
+  
+  def pick_square(board)
+    position = " "
+    loop do
       puts "Pick a square (1-9)"
       position = gets.chomp.to_i
-    end until board.empty_positions.include?(position)
-    b[position] = "X"
+
+      if board.empty_positions.include?(position)
+        position
+        break
+      end
+    end 
+
+    board.b[position] = "X"
   end
 
 end
 
 
 class Computer
-# pick_square
+
+  def pick_square(board)
+    position = board.empty_positions.sample
+    board.b[position] = "O"
+  end
 
 end
 
@@ -91,18 +98,25 @@ class Game
   attr_accessor :name, :current_player
   
   def new_game 
-    if @name == nil
-      puts "What is your name"
-      current_player = gets.chomp
-      puts "Hi, #{current_player} welcome to Tic-Tac-Toe!"
-   end
+    board = Board.new
+    player = Player.new
+    computer = Computer.new
+    winner = ""
+      loop do
+        player.pick_square(board)
+        computer.pick_square(board)
+        board.draw_board
+
+        winner = board.check_winner(board)
+        if winner || board.nine_positions_are_filled?
+          break
+        end
+      end
+      puts "#{winner} is the winner!"  
   end
-
-
 end
 
 
 
-board = Board.new
 game = Game.new
 game.new_game
