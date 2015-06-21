@@ -21,34 +21,34 @@ require"pry"
   # or else
 
 class Board
-  attr_accessor :b
+  attr_accessor :board
 
   def draw_board
       system "clear"
-      puts "#{b[1]}  |  #{b[2]}  |  #{b[3]} "
+      puts "#{board[1]}  |  #{board[2]}  |  #{board[3]} "
       puts " -------------- "
-      puts "#{b[4]}  |  #{b[5]}  |  #{b[6]} "
+      puts "#{board[4]}  |  #{board[5]}  |  #{board[6]} "
       puts " -------------- "
-      puts "#{b[7]}  |  #{b[8]}  |  #{b[9]} "
+      puts "#{board[7]}  |  #{board[8]}  |  #{board[9]} "
   end
 
   # Creates board has called from object.b
   def initialize
-    @b = {}
-    (1..9).each{ |position| @b[position] = " "}
-    @b
+    @board = {}
+    (1..9).each{ |position| @board[position] = " "}
+    @board
     draw_board
   end
 
   def empty_positions
-    @b.select {|k, v| v == " "}.keys
+    @board.select {|k, v| v == " "}.keys
   end 
 
   def check_winner(board)
     winning_lines = [[1,2,3], [4,5,6], [7,8,9], [1,4,7], [2,5,8], [3,6,9], [1,5,9], [3,5,7]]
     winning_lines.each do |line|
-      return "Player" if b.values_at(*line).count('X') == 3
-      return "Computer" if b.values_at(*line).count('O') == 3
+      return "Player" if board.values_at(*line).count('X') == 3
+      return "Computer" if board.values_at(*line).count('O') == 3
     end
     nil
   end
@@ -56,10 +56,6 @@ class Board
   def nine_positions_are_filled?
     !@b.has_value?(" ")
   end
-
-  def announce_winner()
-    puts "#{check_winner} wins!"
-  end 
 
 end
 
@@ -78,7 +74,7 @@ class Player
       end
     end 
 
-    board.b[position] = "X"
+    board.board[position] = "X"
   end
 
 end
@@ -96,13 +92,20 @@ class Game
   attr_accessor :name, :current_player
   
   def new_game(game)
-    board = Board.new
+    board_obj = Board.new
     player = Player.new
     computer = Computer.new
     winner = ""
     keep_playing = ""
       loop do
-        player.pick_square(board)
+        player.pick_square(board_obj)
+                board_obj.draw_board
+
+        winner = board_obj.check_winner(board_obj)
+        if winner || board.nine_positions_are_filled?
+          break
+        end
+
         computer.pick_square(board)
         board.draw_board
 
