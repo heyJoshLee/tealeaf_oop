@@ -44,24 +44,23 @@ class Board
     @board.select {|k, v| v == " "}.keys
   end 
 
-  def check_winner(board)
+  def check_winner
     winning_lines = [[1,2,3], [4,5,6], [7,8,9], [1,4,7], [2,5,8], [3,6,9], [1,5,9], [3,5,7]]
     winning_lines.each do |line|
-      return "Player" if board.values_at(*line).count('X') == 3
+      return "Player" if @board.values_at(*line).count('X') == 3
       return "Computer" if board.values_at(*line).count('O') == 3
     end
     nil
   end
 
-  def nine_positions_are_filled?
-    !@b.has_value?(" ")
+  def self.nine_positions_are_filled?
+    !board.has_value?(" ")
   end
 
 end
 
 
 class Player
-  
   def pick_square(board)
     position = " "
     loop do
@@ -73,10 +72,8 @@ class Player
         break
       end
     end 
-
     board.board[position] = "X"
   end
-
 end
 
 class Computer
@@ -91,25 +88,27 @@ end
 class Game
   attr_accessor :name, :current_player
   
-  def new_game(game)
+  def new_game
     board_obj = Board.new
     player = Player.new
     computer = Computer.new
     winner = ""
     keep_playing = ""
+
+
       loop do
         player.pick_square(board_obj)
                 board_obj.draw_board
 
-        winner = board_obj.check_winner(board_obj)
-        if winner || board.nine_positions_are_filled?
+        winner = board_obj.check_winner
+        if winner || Board.nine_positions_are_filled?
           break
         end
 
         computer.pick_square(board)
         board.draw_board
 
-        winner = board.check_winner(board)
+        winner = board.check_winner(board_obj)
         if winner || board.nine_positions_are_filled?
           break
         end
@@ -140,5 +139,4 @@ class Game
   end
 end
 
-game = Game.new
-game.new_game(game)
+Game.new.new_game
