@@ -53,6 +53,26 @@ class Card
     @value = value
   end
 end
+
+
+class Player
+  attr_accessor :hand
+
+  def initialize
+    hand = []
+  end
+
+  def hit(deck)
+    hand << deck.deal_card
+  end
+  
+  # draw a card
+  # stay
+  # total hand
+  # check bust
+  # check blacjack
+
+end
 =begin
 class Dealer
   draw a card
@@ -63,18 +83,6 @@ class Dealer
 
 end
 
-
-class Player
-  draw a card
-  stay
-  total hand
-  check bust
-  check blacjack
-
-end
-
-
-
 class Table
   draw table
 
@@ -82,5 +90,14 @@ end
 =end
 
 
-deck = Deck_of_cards.new
-p deck.deck 
+
+ @deck = Deck_of_cards.new
+    @deck.shuffle_deck
+    @player = Player.new
+game = Game.new
+game.test
+
+
+
+
+
