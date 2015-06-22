@@ -1,3 +1,4 @@
+require "Pry"
 # One or mutiple decks full of 52 cards each
 # Two users, one dealer one player
 # Deck us shuffled
@@ -43,14 +44,15 @@ class Deck_of_cards
 end
 
 class Card
+  attr_accessor :suit, :face, :value
   SUITS = ["spades", "clubs", "hearts", "diamonds"]
   FACES_AND_VALUES = {"2" => 2, "3" => 3, "4" => 4, "5" => 5, "6" => 6, "7" => 7, "8" => 8, 
                       "9" => 9, "10" => 10, "J" => 10, "Q" => 10, "K" => 10, "A" => 11
                      } 
   def initialize(suit, face, value)
-    @suit = suit
-    @face = face
-    @value = value
+    suit = suit
+    face = face
+    value = value
   end
 end
 
@@ -59,12 +61,16 @@ class Player
   attr_accessor :hand
 
   def initialize
-    hand = []
+    @hand = []
   end
 
   def hit(deck)
-    hand << deck.deal_card
+    new_card = deck.deal_card
+    binding.pry
+    @hand.push(new_card)
+    puts "Player draws a #{new_card.face} of #{new_card.suit} "
   end
+
   
   # draw a card
   # stay
@@ -91,11 +97,10 @@ end
 
 
 
- @deck = Deck_of_cards.new
-    @deck.shuffle_deck
-    @player = Player.new
-game = Game.new
-game.test
+deck = Deck_of_cards.new
+deck.shuffle_deck
+player = Player.new
+player.hit(deck)
 
 
 
