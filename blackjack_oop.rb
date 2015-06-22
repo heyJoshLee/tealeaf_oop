@@ -57,43 +57,18 @@ class Card
 end
 
 
-class Player
-  attr_accessor :hand
-
-  def initialize
-    @hand = []
-  end
-
-  def hit(deck)
-    new_card = deck.deal_card
-    binding.pry
-    @hand.push(new_card)
-    puts "Player draws a #{new_card.face} of #{new_card.suit} "
-  end
-
-  
-  # draw a card
-  # stay
-  # total hand
-  # check bust
-  # check blacjack
-
+class User
 end
-=begin
-class Dealer
-  draw a card
-  stay
-  total hand
-  check bust
-  check blackjack
+
+class Player < User
 
 end
 
-class Table
-  draw table
+class Dealer < User
+ 
 
 end
-=end
+
 
 
 
