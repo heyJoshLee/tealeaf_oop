@@ -1,83 +1,140 @@
-require "Pry"
-# One or mutiple decks full of 52 cards each
-# Two users, one dealer one player
-# Deck us shuffled
-# Card is dealt to player
-# Card is dealt to dealer (player cannot see it)
-# Card is dealt to player
-# card is dealt to dealer (player can see it)
-# Adds all user totals
-# Anyone hit black jack?
-# If not player can hit or stay
-# IF hit get a new card
-# Bust?
-# If bust then lose
-# If no bust can get another card or stay
-# If stay dealer's turn
-# If dealers hand is less than 17 then hit
-# Bust?
-# Compare users
+require 'pry'
 
-class Deck_of_cards
-  attr_accessor :deck
+# Object Oriented Blackjack game
 
-  def initialize
-    @deck = []
-    make_deck
-  end
-
-  def make_deck
-    Card::SUITS.each do |suit|
-      Card::FACES_AND_VALUES.each do |face, value|
-        deck << Card.new(suit,face, value)
-      end
-    end
-  end
-
-  def shuffle_deck
-    deck.shuffle!
-  end
-
-  def deal_card
-    deck.shift
-  end
-end
+# 1) Abstraction
+# 2) Encapsulation
 
 class Card
-  attr_accessor :suit, :face, :value
-  SUITS = ["spades", "clubs", "hearts", "diamonds"]
-  FACES_AND_VALUES = {"2" => 2, "3" => 3, "4" => 4, "5" => 5, "6" => 6, "7" => 7, "8" => 8, 
-                      "9" => 9, "10" => 10, "J" => 10, "Q" => 10, "K" => 10, "A" => 11
-                     } 
-  def initialize(suit, face, value)
-    suit = suit
-    face = face
-    value = value
+  attr_accessor :suit, :face_value
+
+  def initialize(s, fv)
+    @suit = s
+    @face_value = fv
+  end
+
+  def pretty_output
+    "The #{face_value} of #{find_suit}"
+  end
+
+  def to_s
+    pretty_output
+  end
+
+  def find_suit
+    ret_val = case suit
+                when 'H' then 'Hearts'
+                when 'D' then 'Diamonds'
+                when 'S' then 'Spades'
+                when 'C' then 'Clubs'
+              end
+    ret_val
+  end
+end
+
+class Deck
+  attr_accessor :cards
+
+  def initialize
+    @cards = []
+    ['H', 'D', 'S', 'C'].each do |suit|
+      ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'].each do |face_value|
+        @cards << Card.new(suit, face_value)
+      end
+    end
+    scramble!
+  end
+
+  def scramble!
+    cards.shuffle!
+  end
+
+  def deal_one
+    cards.pop
+  end
+
+  def size
+    cards.size
+  end
+end
+
+module Hand
+  def show_hand
+    puts "---- #{name}'s Hand ----"
+    cards.each do|card|
+      puts "=> #{card}"
+    end
+    puts "=> Total: #{total}"
+  end
+
+  def total
+    face_values = cards.map{|card| card.face_value }
+
+    total = 0
+    face_values.each do |val|
+      if val == "A"
+        total += 11
+      else
+        total += (val.to_i == 0 ? 10 : val.to_i)
+      end
+    end
+
+    #correct for Aces
+    face_values.select{|val| val == "A"}.count.times do
+      break if total <= 21
+      total -= 10
+    end
+
+    total
+  end
+
+  def add_card(new_card)
+    cards << new_card
+  end
+
+  def is_busted?
+    total > 21
+  end
+end
+
+class Player
+  include Hand
+
+  attr_accessor :name, :cards
+
+  def initialize(n)
+    @name = n
+    @cards = []
+  end
+
+end
+
+class Dealer
+  include Hand
+
+  attr_accessor :name, :cards
+
+  def initialize
+    @name = "Dealer"
+    @cards = []
   end
 end
 
 
-class User
-end
-
-class Player < User
-
-end
-
-class Dealer < User
- 
-
-end
 
 
+deck = Deck.new
 
+player = Player.new("Chris")
+player.add_card(deck.deal_one)
+player.add_card(deck.deal_one)
+player.add_card(deck.deal_one)
+player.add_card(deck.deal_one)
+player.show_hand
 
-deck = Deck_of_cards.new
-deck.shuffle_deck
-player = Player.new
-player.hit(deck)
-
-
-
-
-
+dealer = Dealer.new
+dealer.add_card(deck.deal_one)
+dealer.add_card(deck.deal_one)
+dealer.add_card(deck.deal_one)
+dealer.add_card(deck.deal_one)
+dealer.show_hand
